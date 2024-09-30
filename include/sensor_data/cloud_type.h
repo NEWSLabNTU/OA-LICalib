@@ -62,6 +62,13 @@ struct PointXYZIR8Y {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // ensure proper alignment
 } EIGEN_ALIGN16;
 
+//CUBE 1 lidar
+struct PointXYZCUBE{
+  PCL_ADD_POINT4D;
+  uint32_t id;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+} EIGEN_ALIGN16;
+
 // Hesai XT32
 struct PointXYZIT {
     PCL_ADD_POINT4D
@@ -103,6 +110,12 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(PointXYZIT,
                                   (double, timestamp, timestamp)
                                   (uint16_t, ring, ring))
 
+POINT_CLOUD_REGISTER_POINT_STRUCT(PointXYZCUBE,
+                                  (float, x, x)
+                                  (float, y, y)
+                                  (float, z, z)
+                                  (uint32_t, id, point_id))
+
 typedef velodyne_pcl::PointXYZIRT RTPoint;
 typedef pcl::PointCloud<RTPoint> RTPointCloud;
 
@@ -117,3 +130,6 @@ typedef pcl::PointCloud<ColorPoint> ColorPointCloud;
 
 typedef PointXYZIT HesaiPoint;
 typedef pcl::PointCloud<HesaiPoint> HesaiPointCloud;
+
+typedef PointXYZCUBE BlickfeldPoint;
+typedef pcl::PointCloud<BlickfeldPoint> BlickfeldCloud;

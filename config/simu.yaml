@@ -1,8 +1,8 @@
 # bag
-topic_lidar: /scan_sim # /velodyne_packets #
-topic_imu: /imu_sim
+topic_lidar: /sensing/lidar/bf_lidar/points_raw # /velodyne_packets #
+topic_imu: /sensing/imu/imu_raw
 
-LidarModel: VLP_16_SIMU
+LidarModel: CUBE1
 vlp16_ring_case: 0
 
 scan4map: 15.0
@@ -17,7 +17,7 @@ use_gui: false
 # 当 segment_num = 1时，即用一段数据标定
 segment_num: 1
 selected_segment:
-  - {start_time: 0, end_time: 7, path_bag: /home/ha/catkin_oa_calib/src/OA-LICalib/data/bag/simu_bag.bag}
+  - {start_time: 0, end_time: 7, path_bag: /root/catkin_oa_calib/src/OA-LICalib/data/bag/output.bag}
 
 
 # If you select false, it calculate initial rotations.

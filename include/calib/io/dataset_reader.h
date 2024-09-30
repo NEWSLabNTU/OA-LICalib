@@ -44,6 +44,7 @@
 #include <sensor_data/lidar_vlp_16.h>
 #include <sensor_data/lidar_vlp_points.h>
 #include <sensor_data/lidar_hesai.h>
+#include <sensor_data/lidar_cube1.h>
 
 #include <utils/math_utils.h>
 #include <utils/eigen_utils.hpp>
@@ -111,6 +112,7 @@ class LioDataset {
     vlp_point_convert_ = nullptr;
     p_robosense_convert_ = nullptr;
     hesai_convert_ = nullptr;
+    cube1_convert_ = nullptr;
 
     if (lidar_model_ == VLP_16_packet || lidar_model_ == VLP_16_SIMU) {
       velodyne16_convert_ = std::make_shared<Velodyne16>();
@@ -152,6 +154,10 @@ class LioDataset {
           RobosenseCorrection::ModelType::RS_16);
       std::cout << "LiDAR model set as RS_16." << std::endl;
     }  //
+    else if (lidar_model_ == CUBE1) {
+      cube1_convert_ = std::make_shared<Cube1LiDAR>();
+      std::cout << "LiDAR model set as CUBE1." << std::endl;
+    }
     else {
       std::cout << "LiDAR model " << lidar_model_ << " not support yet."
                 << std::endl;
@@ -163,14 +169,18 @@ class LioDataset {
             const double bag_durr = -1.0, const std::string vicon_topic = "") {
     bag_.reset(new rosbag::Bag);
     bag_->open(path, rosbag::bagmode::Read);
+    printf("check point 0\n");
+    // printf("start organize cube1 pointcloud.\n");
     Init();
+    // printf("finish organize cube1 pointcloud.\n");
+    printf("check point 1\n");
     rosbag::View view;
 
     std::vector<std::string> topics;
     topics.push_back(imu_topic);
     topics.push_back(lidar_topic);
     if (vicon_topic != "") topics.push_back(vicon_topic);
-
+    printf("check point 2\n");
     if (lidar_model_ == LidarModelType::RS_16) {
       topics.push_back("/rslidar_packets_difop");
     }
@@ -182,7 +192,7 @@ class LioDataset {
     ros::Time time_finish = (bag_durr < 0)
                                 ? view_full.getEndTime()
                                 : time_init + ros::Duration(bag_durr);
-
+    printf("check point 3\n");
     ros::Duration delta_durr = ros::Duration(0.01);
     view.addQuery(*bag_, rosbag::TopicQuery(topics), time_init - delta_durr,
                   time_finish + delta_durr);
@@ -199,7 +209,7 @@ class LioDataset {
         }
       }
     }
-
+    printf("check point 4\n");
     double first_imu_stamp = -1;
     for (rosbag::MessageInstance const m : view) {
       const std::string &topic = m.getTopic();
@@ -246,6 +256,14 @@ class LioDataset {
               m.instantiate<rslidar_msgs::rslidarScan>();
           timestamp = rs_msg->header.stamp.toSec();
           p_robosense_convert_->unpack_scan(rs_msg, lidar_feature);
+        }
+        else if (lidar_model_ == CUBE1){
+          sensor_msgs::PointCloud2::ConstPtr scan_msg = 
+            m.instantiate<sensor_msgs::PointCloud2>();
+            timestamp = scan_msg->header.stamp.toSec();
+            printf("start organize cube1 pointcloud.");
+            cube1_convert_->get_organized_and_raw_cloud(scan_msg, lidar_feature);
+            printf("finish organize cube1 pointcloud.");
         }
 
         lidar_feature.time_max = 0;
@@ -426,6 +444,7 @@ class LioDataset {
   OusterLiDAR::Ptr ouster_convert_;
   RobosenseCorrection::Ptr p_robosense_convert_;
   HesaiLiDAR::Ptr hesai_convert_;
+  Cube1LiDAR::Ptr cube1_convert_;
 
   LidarModelType lidar_model_;
 };
