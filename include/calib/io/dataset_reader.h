@@ -169,18 +169,16 @@ class LioDataset {
             const double bag_durr = -1.0, const std::string vicon_topic = "") {
     bag_.reset(new rosbag::Bag);
     bag_->open(path, rosbag::bagmode::Read);
-    printf("check point 0\n");
-    // printf("start organize cube1 pointcloud.\n");
+    ROS_INFO("Begin I/O dataset initialization.");
     Init();
-    // printf("finish organize cube1 pointcloud.\n");
-    printf("check point 1\n");
+    ROS_INFO("Finish initialization.");
+    
     rosbag::View view;
 
     std::vector<std::string> topics;
     topics.push_back(imu_topic);
     topics.push_back(lidar_topic);
     if (vicon_topic != "") topics.push_back(vicon_topic);
-    printf("check point 2\n");
     if (lidar_model_ == LidarModelType::RS_16) {
       topics.push_back("/rslidar_packets_difop");
     }
@@ -192,7 +190,6 @@ class LioDataset {
     ros::Time time_finish = (bag_durr < 0)
                                 ? view_full.getEndTime()
                                 : time_init + ros::Duration(bag_durr);
-    printf("check point 3\n");
     ros::Duration delta_durr = ros::Duration(0.01);
     view.addQuery(*bag_, rosbag::TopicQuery(topics), time_init - delta_durr,
                   time_finish + delta_durr);
@@ -209,7 +206,7 @@ class LioDataset {
         }
       }
     }
-    printf("check point 4\n");
+    ROS_INFO("Start scanning dataset.");
     double first_imu_stamp = -1;
     for (rosbag::MessageInstance const m : view) {
       const std::string &topic = m.getTopic();
@@ -261,9 +258,9 @@ class LioDataset {
           sensor_msgs::PointCloud2::ConstPtr scan_msg = 
             m.instantiate<sensor_msgs::PointCloud2>();
             timestamp = scan_msg->header.stamp.toSec();
-            printf("start organize cube1 pointcloud.");
+            ROS_INFO("Start organizing CUBE1 pointcloud.");
             cube1_convert_->get_organized_and_raw_cloud(scan_msg, lidar_feature);
-            printf("finish organize cube1 pointcloud.");
+            ROS_INFO("Finish organizing CUBE1 pointcloud.");
         }
 
         lidar_feature.time_max = 0;
