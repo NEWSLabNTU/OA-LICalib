@@ -65,7 +65,7 @@ struct PointXYZIR8Y {
 //CUBE 1 lidar
 struct PointXYZCUBE{
   PCL_ADD_POINT4D;
-  uint32_t id;
+  uint32_t point_id;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 } EIGEN_ALIGN16;
 
@@ -114,7 +114,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(PointXYZCUBE,
                                   (float, x, x)
                                   (float, y, y)
                                   (float, z, z)
-                                  (uint32_t, id, point_id))
+                                  (uint32_t, point_id, point_id))
 
 typedef velodyne_pcl::PointXYZIRT RTPoint;
 typedef pcl::PointCloud<RTPoint> RTPointCloud;

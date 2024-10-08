@@ -169,9 +169,7 @@ class LioDataset {
             const double bag_durr = -1.0, const std::string vicon_topic = "") {
     bag_.reset(new rosbag::Bag);
     bag_->open(path, rosbag::bagmode::Read);
-    ROS_INFO("Begin I/O dataset initialization.");
     Init();
-    ROS_INFO("Finish initialization.");
     
     rosbag::View view;
 
@@ -206,7 +204,6 @@ class LioDataset {
         }
       }
     }
-    ROS_INFO("Start scanning dataset.");
     double first_imu_stamp = -1;
     for (rosbag::MessageInstance const m : view) {
       const std::string &topic = m.getTopic();
@@ -258,9 +255,7 @@ class LioDataset {
           sensor_msgs::PointCloud2::ConstPtr scan_msg = 
             m.instantiate<sensor_msgs::PointCloud2>();
             timestamp = scan_msg->header.stamp.toSec();
-            ROS_INFO("Start organizing CUBE1 pointcloud.");
             cube1_convert_->get_organized_and_raw_cloud(scan_msg, lidar_feature);
-            ROS_INFO("Finish organizing CUBE1 pointcloud.");
         }
 
         lidar_feature.time_max = 0;

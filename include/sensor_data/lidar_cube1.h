@@ -44,9 +44,7 @@ class Cube1LiDAR {
       const sensor_msgs::PointCloud2::ConstPtr &lidarMsg,
       LiDARFeature &output) {
     BlickfeldCloud pc_in;
-    printf("parsing lidar message");
     pcl::fromROSMsg(*lidarMsg, pc_in);
-    printf("finish parsing lidar message");
 
 
     double timebase = lidarMsg->header.stamp.toSec();
@@ -98,7 +96,7 @@ class Cube1LiDAR {
         // t_offset wrt. first point
         point_raw.timestamp = timebase;
         // laser id
-        point_raw.x = src.id;
+        point_raw.x = src.point_id;
         // angle rad
         point_raw.y = timebase;
         // range m
