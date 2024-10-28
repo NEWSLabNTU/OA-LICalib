@@ -7,28 +7,6 @@
 - To use this tool, install Docker in your computer with [this](https://docs.docker.com/engine/install/) link. Make sure you follow the [post-installation](https://docs.docker.com/engine/install/linux-postinstall/) steps.
 
 
-## Install & Run
-
-```shell
-# clone the project repo.
-git clone https://github.com/leo-drive/OA-LICalib
-
-# Build docker image
-cd OA-LICalib/docker
-docker image build -t calib:v1 .
-
-# Create container from docker image
-# define env. var. with your local repo. path
-export REPO_PATH="/home/bzeren/projects/OA-LICalib/"
-docker run -it --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --volume="$REPO_PATH:/root/catkin_oa_calib/src/OA-LICalib" calib:v1 bash
-
-cd catkin_oa_calib/
-catkin_make -DCATKIN_WHITELIST_PACKAGES=""
-
-# install your environment and launch calibration tool
-source ./devel/setup.bash
-roslaunch oa_licalib li_calib.launch
-```
 
 ## Intrinsic and Extrinsic Calibration
 
